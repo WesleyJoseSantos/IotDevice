@@ -52,7 +52,7 @@ public:
         return false;
     }
 
-    void sendData(const String &destiny, const String &data){
+    void sendData(const String &destiny, const String &data = ""){
         for (size_t i = 0; i < COM_PORT_COUNT; i++)
         {
             if(portAvailable((ComPort)i)){
@@ -62,7 +62,7 @@ public:
         
     }
 
-    void sendData(ComPort comPort, const String &destiny, const String &data){
+    void sendData(ComPort comPort, const String &destiny, const String &data = ""){
         if(portAvailable(comPort)){
             coms[comPort]->sendData(data, destiny);
         }
