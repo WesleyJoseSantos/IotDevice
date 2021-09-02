@@ -13,10 +13,10 @@
 
 #include "ESPAsyncWebServer.h"
 #ifdef  ESP8266
-#include "LittleFS.h"
+#include "FS.h"
 #else
 #include "SPIFFS.h"
-#define LittleFS SPIFFS
+#define SPIFFS SPIFFS
 #endif  //ESP8266
 
 class WebServerHandler : public AsyncWebHandler
@@ -54,16 +54,18 @@ public:
      virtual void handleRequest(AsyncWebServerRequest *request){
         if(request->method() == 1){
             if(request->url() == "/"){
-                if(LittleFS.exists(homepage)){
-                    request->send(LittleFS, homepage, "text/html");
+                if(SPIFFS.exists(homepage)){
+                    request->send(SPIFFS, homepage, "text/html");
                 }else{
                     request->send(404, "text/html", "file not exists");
+                    Serial.println(homepage);
                 }
             }else{
-                if(LittleFS.exists(request->url())){
+                if(SPIFFS.exists(request->url())){
                     String type = getContentType(request->url());
-                    request->send(LittleFS, request->url(), type);
+                    request->send(SPIFFS, request->url(), type);
                 }else{
+                    Serial.println(request->url());
                     request->send(404, "text/html", "file not exists");
                 }
             }
