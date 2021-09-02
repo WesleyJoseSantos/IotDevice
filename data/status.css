@@ -1,0 +1,25 @@
+.sti {
+    display:inline-block;
+    height: 10px;
+    width: 10px;
+}
+
+.str {
+    display:inline-block;
+    height: 10px;
+    width: 10px;
+}
+
+.on {background: green;}
+.off {background: lightgray;}
+.rdy {background: darkblue;}
+.warning {background: gold;}
+.err {background: red;}
+
+.display {
+    width: 97%;
+    border: 1px solid rgb(143, 143, 143);
+    border-radius: 6px;
+    padding: 5px;
+    margin: 15px;
+}

@@ -1,14 +1,14 @@
-var btnSend = document.getElementById("btnSend")
-var server1Field = document.getElementById("server1Field")
-var server2Field = document.getElementById("server2Field")
-var server3Field = document.getElementById("server3Field")
-var timeZoneField = document.getElementById("timeZoneField")
-var ssidField = document.getElementById("ssidField")
-var passField = document.getElementById("passField")
-var urlField = document.getElementById("urlField")
-var portField = document.getElementById("portField")
-var userField = document.getElementById("userField")
-var passField = document.getElementById("passField")
+var btn = document.getElementById("btn")
+var ssidfield = document.getElementById("ssidfield")
+var passfield = document.getElementById("passfield")
+var server1field = document.getElementById("server1field")
+var server2field = document.getElementById("server2field")
+var server3field = document.getElementById("server3field")
+var timezonefield = document.getElementById("timezonefield")
+var burlfield = document.getElementById("urlfield")
+var bportfield = document.getElementById("portfield")
+var buserfield = document.getElementById("userfield")
+var bpassfield = document.getElementById("passfield")
 var loader = document.getElementById("loader")
 var fail = document.getElementById("fail")
 var sucess = document.getElementById("sucess")
@@ -16,28 +16,28 @@ var subtitle = document.getElementById("subtitle")
 var text = document.getElementById("text")
 var mac = document.getElementById("mac")
 
-function btnSend_onclick() {
+function btn_onclick() {
     var provData = {
         ntpProv: {
-            server1: server1Field.value,
-            server2: server2Fieldserver1Field.value,
-            server3: server3Fieldserver1Field.value,
-            timeZone: timeZoneFieldserver1Field.value,
+            server1: server1field.value,
+            server2: server2field.value,
+            server3: server3field.value,
+            timeZone: timezonefield.value,
         },
         wifiProv: {
-            ssid: ssidFieldserver1Field.value,
-            pass: passFieldserver1Field.value,
+            ssid: ssidfield.value,
+            pass: passfield.value,
         },
         mqttProv: {
-            url: urlFieldserver1Field.value,
-            port: portFieldserver1Field.value,
-            user: userFieldserver1Field.value,
-            pass: passFieldserver1Field.value,
+            url: burlfield.value,
+            port: bportfield.value,
+            user: buserfield.value,
+            pass: bpassfield.value,
         }
     }
     sendData(provData)
     showElement(loader, null, "Enviando credenciais...")
-    btnSend.onclick = function() {}
+    btn.onclick = function() {}
 }
 
 function sendData(data) {
@@ -47,7 +47,7 @@ function sendData(data) {
     xhr.open("POST", "/?data=" + jsonStr, true)
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            btnSend.textContent = "Credenciais enviadas."
+            btn.textContent = "Credenciais enviadas."
             interval = setInterval(() => {
                 checkConnection()
             }, 1000)
@@ -127,13 +127,13 @@ function checkConnection() {
 function showElement(element, color, text) {
     element.style.display = "block"
     if (color != null) element.style.color = color
-    btnSend.textContent = text
+    btn.textContent = text
 }
 
 function resetPage() {
     setTimeout(() => {
         fail.style.display = "none"
-        btnSend.textContent = "Enviar"
-        btnSend.onclick = btnPress
+        btn.textContent = "Enviar"
+        btn.onclick = btn_onclick
     }, 2500)
 }

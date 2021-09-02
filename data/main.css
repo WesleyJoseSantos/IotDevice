@@ -1,0 +1,10 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+html {
+  height: 98%;
+}
+body {
+  height: 100%;
+}
