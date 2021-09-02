@@ -84,7 +84,7 @@ public:
      * 
      * @param fileName 
      */
-    void setFileName(String &fileName){
+    void setFileName(const String &fileName){
         _fileName = fileName;
     }
 
