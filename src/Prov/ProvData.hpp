@@ -46,7 +46,6 @@ class ProvData : public IJsonData
 private:
 
 public:
-    int provItems;
     NtpProvData ntpProv;
     WifiProvData wifiProv;
     MqttProvData mqttProv;
@@ -54,27 +53,9 @@ public:
     ProvData() {}
     ~ProvData() {}
 
-    void enableProvItem(ProvItem item){
-        provItems = ((provItems) |= (1UL << (item)));
-    }
-
-    void disableProvItem(ProvItem item){
-        provItems = ((provItems) &= ~(1UL << (item)));
-    }
-
-    void setProvItems(int provItems){
-        provItems = provItems;
-    }
-
-    bool isEnabled(ProvItem item){
-        return (((provItems) >> (item)) & 0x01);
-    }
-
     void fromJson(const String &jsonStr) override {
         StaticJsonDocument<1023> jsonDoc;
         deserializeJson(jsonDoc, jsonStr);
-
-        provItems = jsonDoc["provItems"];
 
         if(jsonDoc.containsKey("ntpProv")){
             ntpProv.server1 = jsonDoc["ntpProv"]["server1"].as<String>();
@@ -99,8 +80,6 @@ public:
     String toJson() override {
         StaticJsonDocument<1023> jsonDoc;
         String jsonStr;
-
-        jsonDoc["provItems"] = provItems;
 
         jsonDoc["ntpProv"]["server1"] = ntpProv.server1;
         jsonDoc["ntpProv"]["server2"] = ntpProv.server2;
