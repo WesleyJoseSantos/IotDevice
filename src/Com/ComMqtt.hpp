@@ -26,13 +26,13 @@ class ComMqtt : public MQTTClient, public Com
 private:
     static String _topic;
     static String _data;
-    static String _dataReceived;
+    static bool _dataAvailable;
 
     static void onData(String &topic, String &payload)
     {
         _topic = topic;
         _data = payload;
-        _dataReceived = true;
+        _dataAvailable = true;
     }
 
 public:
@@ -72,7 +72,7 @@ public:
 
     bool dataAvailable() override
     {
-        return _dataReceived;
+        return _dataAvailable;
     }
 
     String getData() override
@@ -83,4 +83,4 @@ public:
 
 String ComMqtt::_topic;
 String ComMqtt::_data;
-String ComMqtt::_dataReceived;
+bool ComMqtt::_dataAvailable;
