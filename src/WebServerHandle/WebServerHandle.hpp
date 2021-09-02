@@ -70,7 +70,7 @@ public:
         }
     }
 
-    void setHomePage(String homepage){
+    void setHomePage(const String &homepage){
         this->homepage = homepage;
     }
 };
