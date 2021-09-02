@@ -24,6 +24,7 @@ enum ProvItem
 struct WifiProvData{
     String ssid;
     String pass;
+    WiFiMode mode;
 };
 
 struct NtpProvData
@@ -67,6 +68,7 @@ public:
         if(jsonDoc.containsKey("wifiProv")){
             wifiProv.ssid = jsonDoc["wifiProv"]["ssid"].as<String>();
             wifiProv.pass = jsonDoc["wifiProv"]["pass"].as<String>();
+            wifiProv.mode = jsonDoc["wifiProv"]["mode"];
         }
 
         if(jsonDoc.containsKey("mqttProv")){
