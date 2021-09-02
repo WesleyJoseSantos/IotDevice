@@ -20,7 +20,6 @@ enum ProvStatus
     ST_IDLE,
     ST_WAITING_PROV_DATA,
     ST_PROV_WIFI,
-    ST_WIFI_REFUSED,
     ST_PROV_NTP,
     ST_PROV_MQTT,
     ST_WAITING_CONFIRM,
@@ -33,11 +32,16 @@ class Prov
 private:
     ProvStatus _status;
     String _ssid;
-    ComWebServer _webServer;
-    IotDevice *_device;
+    ComWebServer _webServerHandler;
+    ComHandler *_device;
     ProvDataFile _file;
 
+    WiFiClient _wifiClient;
+    DNSServer _dns;
+    AsyncWebServer _webServer;
+
     int _timeout;
+    int _ntpTimeout;
     bool _provOk;
 
     bool _waitTime(int time)
@@ -62,18 +66,17 @@ private:
     }
 
 public:
-
-    Prov(IotDevice &device, String &ssid, int timeout)
+    Prov(ComHandler &device, const String &ssid, int timeout) : _webServer(80)
     {
         _device = &device;
         _ssid = ssid;
         _timeout = timeout;
-        _device->getCom(COM_PORT_WEB_SERVER, &_webServer);
+        _device->getCom(COM_PORT_WEB_SERVER, &_webServerHandler);
     }
 
     ~Prov() {}
 
-    void begin(String &fileName)
+    void begin(const String &fileName, const String &homePage)
     {
         if (!LittleFS.begin())
         {
@@ -81,6 +84,7 @@ public:
         }
 
         _file.setFileName(fileName);
+        _webServerHandler.setHomePage(homePage);
 
         if (_file.load())
         {
@@ -90,6 +94,10 @@ public:
         else
         {
             _status = ST_WAITING_PROV_DATA;
+            WiFi.softAP(_ssid);
+            _dns.start(53, "*", WiFi.softAPIP());
+            _webServer.addHandler(&_webServerHandler);
+            _webServer.begin();
         }
     }
 
@@ -121,9 +129,11 @@ public:
         }
         break;
         case ST_PROV_WIFI:
+            _device->sendData("PROV_WIFI");
             if (WiFiHandler::connect(_file.data.wifiProv.ssid, _file.data.wifiProv.pass))
             {
                 _status = ST_PROV_NTP;
+                _device->sendData("PROV_NTP");
                 configTime(_file.data.ntpProv.timezone, 0,
                            _file.data.ntpProv.server1.c_str(),
                            _file.data.ntpProv.server2.c_str(),
@@ -131,17 +141,25 @@ public:
             }
             else
             {
-                _status = ST_WIFI_REFUSED;
+                _status = ST_WAITING_PROV_DATA;
+                _device->sendData("WIFI_REFUSED");
             }
-            break;
-        case ST_WIFI_REFUSED:
-            _device->sendData("WIFI_REFUSED", "Prov");
-            _status = ST_WAITING_PROV_DATA;
             break;
         case ST_PROV_NTP:
             if (_getYear() > 120)
             {
                 _status = ST_PROV_MQTT;
+                _device->sendData("PROV_MQTT");
+            }else{
+                _ntpTimeout++;
+                delay(1000);
+                if(_ntpTimeout >= 20){
+                    _ntpTimeout = 0;
+                    _status = ST_PROV_MQTT;
+                    _device->sendData("NTP_ERR");
+                    delay(4000);
+                    _device->sendData("PROV_MQTT");
+                }
             }
             break;
         case ST_PROV_MQTT:
@@ -153,10 +171,14 @@ public:
                 _device->getCom(COM_PORT_MQTT, mqtt);
                 if (mqtt->connect(_file.data.mqttProv.url, client))
                 {
+                    _status = ST_WAITING_CONFIRM;
                     _device->sendData(WiFi.macAddress(), "Prov");
                 }
+                else
+                {
+                    _device->sendData("PROV_MQTT_ERR");
+                }
             }
-            _status = ST_WAITING_CONFIRM;
         }
         break;
         case ST_WAITING_CONFIRM:
@@ -168,6 +190,7 @@ public:
                 {
                     _file.save();
                     _status = ST_PROV_COMPLETE;
+                    _device->sendData("PROV_COMPLETE");
                 }
             }
         }
@@ -181,7 +204,7 @@ public:
         return _status;
     }
 
-    ProvStatus getProvStatus()
+    ProvStatus getStatus()
     {
         return _status;
     }
