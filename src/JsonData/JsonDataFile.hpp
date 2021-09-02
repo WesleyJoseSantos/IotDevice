@@ -14,10 +14,10 @@
 #include "IJsonData.hpp"
 
 #ifdef  ESP8266
-#include "LittleFS.h"
+#include "FS.h"
 #else
 #include "SPIFFS.h"
-#define LittleFS SPIFFS
+#define SPIFFS SPIFFS
 #endif  //ESP8266
 
 /**
@@ -40,7 +40,7 @@ public:
      * @return false se não existe
      */
     bool exists(){
-        return LittleFS.exists(_fileName);
+        return SPIFFS.exists(_fileName);
     }
 
     /**
@@ -49,7 +49,7 @@ public:
      */
     void save(){
         String jsonStr = toJson();
-        File file = LittleFS.open(_fileName, "w+");
+        File file = SPIFFS.open(_fileName, "w+");
         file.print(jsonStr);
         file.close();
     }
@@ -61,7 +61,7 @@ public:
      * @return false 
      */
     bool load(){
-        File file = LittleFS.open(_fileName, "r");
+        File file = SPIFFS.open(_fileName, "r");
         if(file){
             String jsonStr = file.readString();
             fromJson(jsonStr);
@@ -76,7 +76,7 @@ public:
      * 
      */
     void remove(){
-        LittleFS.remove(_fileName);
+        SPIFFS.remove(_fileName);
     }
 
     /**
