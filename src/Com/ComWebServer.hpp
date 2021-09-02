@@ -19,8 +19,7 @@ class ComWebServer : public WebServerHandler, public Com
 private:
     String _dataToSend;
     String _dataToReceive;
-    bool _dataSended;
-    bool _dataReceived;
+    bool _dataAvailable;
 public:
     ComWebServer() {}
 
@@ -36,7 +35,6 @@ public:
             if(request->hasParam("data")){
                 String type = getContentType(request->url());
                 request->send(200, type, _dataToSend);
-                _dataSended = true;
                 return;
             }
         }
@@ -44,7 +42,7 @@ public:
         if(request->method() == 2){
             if(request->hasParam("data")){
                 _dataToReceive = request->getParam("data")->value();
-                _dataReceived = true;
+                _dataAvailable = true;
                 request->send(200, "text/html", "OK");
                 return;
             }
@@ -58,7 +56,7 @@ public:
     }
 
     bool dataAvailable() override {
-        return _dataReceived;
+        return _dataAvailable;
     }
 
     String getData() override {
