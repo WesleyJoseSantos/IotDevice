@@ -26,9 +26,17 @@
 class IotDevice : public ComHandler
 {
 private:
-
+    ComSerial _serial;
+    ComMqtt _mqtt;
+    ComWebServer _webServerHandle;
 public:
-    IotDevice(){}
+    IotDevice(Stream &serial) : _serial(serial) {}
 
     ~IotDevice() {}
+
+    void init(){
+        attachCom(_serial, COM_PORT_SERIAL);
+        attachCom(_mqtt, COM_PORT_MQTT);
+        attachCom(_webServerHandle, COM_PORT_WEB_SERVER);
+    }
 };
