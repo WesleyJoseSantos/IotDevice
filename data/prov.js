@@ -1,56 +1,61 @@
 var btn = document.getElementById("btn")
-var ssidfield = document.getElementById("ssidfield")
-var passfield = document.getElementById("passfield")
-var server1field = document.getElementById("server1field")
-var server2field = document.getElementById("server2field")
-var server3field = document.getElementById("server3field")
-var timezonefield = document.getElementById("timezonefield")
-var burlfield = document.getElementById("urlfield")
-var bportfield = document.getElementById("portfield")
-var buserfield = document.getElementById("userfield")
-var bpassfield = document.getElementById("passfield")
+var ssid = document.getElementById("ssid")
+var pass = document.getElementById("pass")
+var server1 = document.getElementById("server1")
+var server2 = document.getElementById("server2")
+var server3 = document.getElementById("server3")
+var timezone = document.getElementById("timezone")
+var burl = document.getElementById("burl")
+var bport = document.getElementById("bport")
+var buser = document.getElementById("buser")
+var bpass = document.getElementById("bpass")
 var loader = document.getElementById("loader")
 var fail = document.getElementById("fail")
 var sucess = document.getElementById("sucess")
 var subtitle = document.getElementById("subtitle")
 var text = document.getElementById("text")
 var mac = document.getElementById("mac")
+var form = document.getElementById("form")
 
 function btn_onclick() {
     var provData = {
         ntpProv: {
-            server1: server1field.value,
-            server2: server2field.value,
-            server3: server3field.value,
-            timeZone: timezonefield.value,
+            server1: server1.value,
+            server2: server2.value,
+            server3: server3.value,
+            timeZone: timezone.value,
         },
         wifiProv: {
-            ssid: ssidfield.value,
-            pass: passfield.value,
+            ssid: ssid.value,
+            pass: pass.value,
         },
         mqttProv: {
-            url: burlfield.value,
-            port: bportfield.value,
-            user: buserfield.value,
-            pass: bpassfield.value,
+            url: burl.value,
+            port: bport.value,
+            user: buser.value,
+            pass: bpass.value,
         }
     }
+    form.style.display = "none"
+    showElement(loader, null, "Sending data...")
     sendData(provData)
-    showElement(loader, null, "Enviando credenciais...")
     btn.onclick = function() {}
 }
 
 function sendData(data) {
     var jsonStr = JSON.stringify(data)
-    console.log(data)
+    console.log(jsonStr)
     var xhr = new XMLHttpRequest()
     xhr.open("POST", "/?data=" + jsonStr, true)
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            btn.textContent = "Credenciais enviadas."
-            interval = setInterval(() => {
-                checkConnection()
-            }, 1000)
+            var data = xhr.responseText
+            if (data == "OK") {
+                btn.textContent = "Data sended to device."
+                interval = setInterval(() => {
+                    checkConnection()
+                }, 1000)
+            }
         }
     }
     xhr.send()
@@ -59,42 +64,42 @@ function sendData(data) {
 function checkConnection() {
     var xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function() {
-
         if (xhr.readyState == 4 && xhr.status == 200) {
             var data = xhr.responseText
+            console.log(data);
 
             if (data == "PROV_WIFI") {
-                btn.textContent = "Conectando..."
+                btn.textContent = "Connecting to wifi..."
             }
 
             if (data == "WIFI_REFUSED") {
                 clearInterval(interval)
                 loader.style.display = "none"
-                showElement(fail, "yellow", "Credenciais recusadas!")
+                showElement(fail, "yellow", "WiFi credentials error!")
                 resetPage()
             }
 
             if (data == "PROV_NTP") {
                 sucess.style.display = "none"
-                showElement(loader, null, "Configurando Relógio...")
+                showElement(loader, null, "NTP sync in progress...")
             }
 
             if (data == "NTP_ERR") {
                 clearInterval(interval)
                 loader.style.display = "none"
-                showElement(fail, "yellow", "Erro ao configurar o relógio!")
+                showElement(fail, "yellow", "NTP sync error!")
                 resetPage()
             }
 
             if (data == "PROV_MQTT") {
                 sucess.style.display = "none"
-                showElement(loader, null, "Conectando-se ao servidor mqtt...")
+                showElement(loader, null, "Connecting to MQTT...")
             }
 
             if (data == "PROV_MQTT_ERR") {
                 clearInterval(interval)
                 loader.style.display = "none"
-                showElement(fail, "yellow", "Erro ao se conectar no servidor!")
+                showElement(fail, "yellow", "MQTT connection error!")
                 resetPage()
             }
 
@@ -102,10 +107,10 @@ function checkConnection() {
             if (data.split(":").length == 6) {
                 mac.textContent = data
                 loader.style.display = "none"
-                subtitle.textContent = "Concluir configuração"
-                text.textContent = "Pressione continuar para concluir a configuração do dispositivo"
+                subtitle.textContent = "Confirm Configuration"
+                text.textContent = "Press confirm button to confirm and finish device configuration proccess."
                 mac.style.display = "block"
-                btn.textContent = "Continuar"
+                btn.textContent = "Confirm"
                 btn.onclick = function() {
                     sendData("C")
                     setTimeout(() => {
@@ -115,7 +120,7 @@ function checkConnection() {
             }
 
             if (data == "PROV_COMPLETE") {
-                showElement(sucess, "green", "Configuração concluída!")
+                showElement(sucess, "green", "Configuration Complete!")
             }
 
         }
@@ -132,6 +137,7 @@ function showElement(element, color, text) {
 
 function resetPage() {
     setTimeout(() => {
+        form.style.display = "block"
         fail.style.display = "none"
         btn.textContent = "Enviar"
         btn.onclick = btn_onclick

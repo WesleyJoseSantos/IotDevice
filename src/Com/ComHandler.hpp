@@ -73,6 +73,7 @@ public:
         {
             if(portAvailable((ComPort)i)){
                 if (coms[i]->dataAvailable()){
+                    Serial.println(i);
                     return ((ComPort)i);
                 }
             }
@@ -101,6 +102,14 @@ public:
     }
 
     void getCom(ComPort comPort, Com *com){
+        Serial.printf("2:%p\n", com);
         com = coms[comPort];
+        Serial.printf("3:%p\n", com);
+    }
+
+    void getCom(ComPort comPort, Com **com){
+        Serial.printf("2:%p\n", com);
+        *com = coms[comPort];
+        Serial.printf("3:%p\n", com);
     }
 };

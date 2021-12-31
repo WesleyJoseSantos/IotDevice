@@ -1,16 +1,3 @@
-.content {
-    height: 80px;
-    width: 100%;
-    padding: 10px 15px;
-    background: #1e1e1e;
-    border: 1px solid #999;
-    border-radius: 6px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    color: #fff;
-}
-
 .divider {
     border-bottom: 1px solid #ccc;
     margin-top: 20px;
@@ -47,8 +34,8 @@ li {
 .content {
     position: relative;
     width: 100%;
-    height: 80%;
-    padding: 20px 15px;
+    height: 90%;
+    padding: 15px 15px;
     background: #1e1e1e;
     border: 1px solid #999;
     border-radius: 6px;

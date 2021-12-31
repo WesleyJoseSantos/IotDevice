@@ -3,14 +3,17 @@
 #include "IotDevice.hpp"
 
 IotDevice device(Serial);
-Prov prov(device, "Prov AP", 30000);
+Prov prov;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(74400);
 
   device.init();
-  prov.begin("/prov.json", "/prov.html"); 
+
+  prov.setSsid("Prov IoT Device");
+
+  prov.begin(device); 
 }
 
 void loop() {

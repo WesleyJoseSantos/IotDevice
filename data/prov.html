@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="symbol.css">
     <link rel="stylesheet" href="loader.css">
     <link rel="stylesheet" href="input.css">
-    <title>PRODAQ | Get Started</title>
+    <title>Prov IoT Device | Get Started</title>
     <style>
         .mac-code {
             display: none;
@@ -28,51 +28,40 @@
 <body>
     <div class="container">
         <header class="title">
-            <span>ProDaq</span>
+            <span>Prov IoT Device</span>
             <div class="divider"></div>
         </header>
 
         <div class="content">
-            <ul>
+            <div id="form">
                 <h3 id="subtitle" class="center-text">WiFi</h3>
-                <li id="ssidfield" class="field">
-                    SSID:
-                    <input class="input" id="ssid" type="text">
-                </li>
-                <li id="passfield" class="field">
-                    Senha:
-                    <input class="input" id="pass" type="password">
-                </li>
+                SSID: <input class="input" id="ssid" type="text"> Pass: <input class="input" id="pass" type="password">
 
                 <h3 id="subtitle" class="center-text">NTP</h3>
-                <li id="server1field" class="field">
-                    Server:
-                    <input class="input" id="server1" type="text">
-                </li>
+                Server 1: <input class="input" id="server1" type="text"> Server 2: <input class="input" id="server2" type="text"> Server 3: <input class="input" id="server3" type="text"> Timezone: <input class="input" id="timezone" type="text">
 
                 <h3 id="subtitle" class="center-text">MQTT</h3>
-                <li id="burlfield" class="field">
-                    Url:
-                    <input class="input" id="burl" type="text">
-                </li>
+                Url:<input class="input" id="burl" type="text"> Port:
+                <input class="input" id="bport" type="text"> User:
+                <input class="input" id="buser" type="number"> Pass:
+                <input class="input" id="bpass" type="password">
+            </div>
 
-                <div id="fail" class="symbol">&#9888;</div>
-                <div id="sucess" class="symbol">&check;</div>
-                <div id="loader" class="loader"></div>
-                <div>
-                    <h1 id="mac" class="mac-code">Carregando...</h3>
-                        <button id="btn" class="bottom-btn" onclick="btn_onclick()">
-                            Enviar
-                        </button>
-                </div>
-            </ul>
+            <div id="fail" class="symbol">&#9888;</div>
+            <div id="sucess" class="symbol">&check;</div>
+            <div id="loader" class="loader"></div>
+
+            <div>
+                <h1 id="mac" class="mac-code">Loaging...</h3>
+                    <button id="btn" class="bottom-btn" onclick="btn_onclick()">
+                        Send
+                    </button>
+            </div>
         </div>
 
     </div>
-    <script src="nav.js"></script>
     <script src="tab.js"></script>
-    <script src="foto.js"></script>
-    <script src="hmi.js"></script>
+    <script src="prov.js"></script>
     <script>
     </script>
 </body>

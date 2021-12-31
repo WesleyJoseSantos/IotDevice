@@ -27,14 +27,7 @@ private:
     static String _topic;
     static String _data;
     static bool _dataAvailable;
-
-    static void onData(String &topic, String &payload)
-    {
-        _topic = topic;
-        _data = payload;
-        _dataAvailable = true;
-    }
-
+    
 public:
     ComMqtt() {}
 

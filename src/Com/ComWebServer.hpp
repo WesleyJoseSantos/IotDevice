@@ -30,7 +30,6 @@ public:
     }
 
     void handleRequest(AsyncWebServerRequest *request) override {
-        
         if(request->method() == 1){
             if(request->hasParam("data")){
                 String type = getContentType(request->url());
@@ -43,6 +42,7 @@ public:
             if(request->hasParam("data")){
                 _dataToReceive = request->getParam("data")->value();
                 _dataAvailable = true;
+                Serial.println("DataAvailable");
                 request->send(200, "text/html", "OK");
                 return;
             }
@@ -56,10 +56,12 @@ public:
     }
 
     bool dataAvailable() override {
+        if(_dataAvailable) Serial.println("DataAvailable");
         return _dataAvailable;
     }
 
     String getData() override {
+        _dataAvailable = false;
         return _dataToReceive;
     }
 };
